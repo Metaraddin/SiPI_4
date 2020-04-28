@@ -10,10 +10,6 @@ class Database:
                 password=password,
                 host=host,
                 port=port)
-
-            #self.send_query("""
-            #CREATE DATABASE %s
-            #""" % app_db_name)
         except psql.OperationalError as error:
             raise error
 

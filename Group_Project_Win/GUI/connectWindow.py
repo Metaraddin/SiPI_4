@@ -28,8 +28,8 @@ class ConnectWindow(QtWidgets.QDialog, GUI.Forms.connectWindowForm.Ui_Dialog):
         self.button_connect.setEnabled(False)
 
     def button_connect_action(self):
-        if storage.connect(self.line_edit_ip.text(), self.line_edit_port):
-            self.close() ##################
+        if storage.connect(self.line_edit_ip.text(), self.line_edit_port.text()):
+            print('check') ##################
         else:
             QtWidgets.QMessageBox.about(self, 'Ошибка', 'Не удалось подключиться к базе данных.'
                                                         '\nПроверьте данные и попробуйте снова.')

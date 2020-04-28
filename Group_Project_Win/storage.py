@@ -2,7 +2,7 @@ import sys
 import psycopg2 as psql
 from Database.database import Database
 from Database.students import Student
-from Database.group import Group
+from Database.groups import Groups
 from Database.faculty import Faculty
 from Database.specialty import Specialty
 from PyQt5 import QtWidgets, QtGui, QtCore
@@ -17,14 +17,15 @@ specialty = None
 def connect(ip, port):
     global student, group, faculty, specialty
     try:
-        database = Database('sipi_gp', 'client', 'clientgp', ip, port)
+        database = Database('sipi_gp', 'client_gp', 'client', ip, port)
     except psql.OperationalError:
         return False
     student = Student(database)
-    group = Group(database)
+    groups = Groups(database)
     faculty = Faculty(database)
     specialty = Specialty(database)
     return True
+
 
 palette_dark = QtGui.QPalette()
 palette_dark.setColor(QtGui.QPalette.Window, QtGui.QColor(53, 53, 53))
