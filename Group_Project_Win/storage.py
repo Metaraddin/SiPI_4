@@ -82,6 +82,7 @@ app.setWindowIcon(QtGui.QIcon('GUI/icon.ico'))
 
 current_theme = 0
 
+
 def set_white_theme():
     global current_theme
     current_theme = 0
