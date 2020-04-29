@@ -4,8 +4,8 @@ class Groups:
         self.database.send_query("""
         CREATE TABLE IF NOT EXISTS groups (
             id SERIAL PRIMARY KEY,
-            faculty_id INT NOT NULL,
-            specialty_id INT NOT NULL,
+            faculty TEXT NOT NULL,
+            specialty TEXT NOT NULL,
             receipt_year INT NOT NULL)
         """)
 

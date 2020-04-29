@@ -3,10 +3,9 @@ import psycopg2 as psql
 from Database.database import Database
 from Database.students import Student
 from Database.groups import Groups
-from Database.faculty import Faculty
-from Database.specialty import Specialty
 from Database.statement_exam import StatementExam
 from Database.statement_test import StatementTest
+from Database.employee import Employee
 from Database.discipline import Discipline
 from PyQt5 import QtWidgets, QtGui, QtCore
 
@@ -18,21 +17,21 @@ specialty = None
 statement_exam = None
 statement_test = None
 discipline = None
+employee = None
 
 
 def connect(ip, port):
-    global student, groups, faculty, specialty, statement_exam, statement_test, discipline
+    global student, groups, faculty, specialty, statement_exam, statement_test, discipline, employee
     try:
         database = Database('sipi_gp', 'client_gp', 'client', ip, port)
     except psql.OperationalError as e:
         return False
     student = Student(database)
     groups = Groups(database)
-    faculty = Faculty(database)
-    specialty = Specialty(database)
     statement_exam = StatementExam(database)
     statement_test = StatementTest(database)
     discipline = Discipline(database)
+    employee = Employee(database)
     return True
 
 

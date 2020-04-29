@@ -4,7 +4,8 @@ class Discipline:
         self.database.send_query("""
         CREATE TABLE IF NOT EXISTS discipline (
             id SERIAL PRIMARY KEY,
-            name TEXT)
+            name TEXT NOT NULL,
+            semester INT NOT NULL)
         """)
 
     def get_all(self):
