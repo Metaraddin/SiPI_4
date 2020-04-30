@@ -1,2 +1,4 @@
 rootProject.name='GroupProject'
 include ':app'
+include ':Model'
+include ':ModelView'
