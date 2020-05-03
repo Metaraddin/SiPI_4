@@ -11,5 +11,11 @@ class Groups:
 
     def get_all(self):
         return self.database.send_read_query("""
-        SELECT * FROM group
+        SELECT * FROM groups
         """)
+
+    def get_group(self, id):
+        return self.database.send_read_query("""
+        SELECT * FROM groups
+        WHERE id = %s
+        """ % id)

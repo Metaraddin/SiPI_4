@@ -2,6 +2,7 @@ import storage
 import re
 import GUI.Forms.connectWindowForm
 from PyQt5 import QtWidgets, QtCore, QtGui
+from GUI.mainWindow import MainWindow
 
 
 class ConnectWindow(QtWidgets.QDialog, GUI.Forms.connectWindowForm.Ui_Dialog):
@@ -19,6 +20,9 @@ class ConnectWindow(QtWidgets.QDialog, GUI.Forms.connectWindowForm.Ui_Dialog):
         self.line_edit_ip.setValidator(QtGui.QRegExpValidator(QtCore.QRegExp(self.ip_regex)))
         self.line_edit_port.setValidator(QtGui.QIntValidator(0, 65535))
 
+        self.line_edit_ip.setText('192.168.0.30')
+        self.line_edit_port.setText('5432')
+
         self.check_line_edit()
 
     def check_line_edit(self):
@@ -29,7 +33,9 @@ class ConnectWindow(QtWidgets.QDialog, GUI.Forms.connectWindowForm.Ui_Dialog):
 
     def button_connect_action(self):
         if storage.connect(self.line_edit_ip.text(), self.line_edit_port.text()):
-            print('check') ##################
+            self.ui = MainWindow()
+            self.ui.show()
+            self.close()
         else:
             QtWidgets.QMessageBox.about(self, 'Ошибка', 'Не удалось подключиться к базе данных.'
                                                         '\nПроверьте данные и попробуйте снова.')

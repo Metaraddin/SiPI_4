@@ -12,5 +12,5 @@ class Employee:
 
     def get_all(self):
         return self.database.send_read_query("""
-        SELECT * FROM group
+        SELECT login, full_name, position FROM employee
         """)

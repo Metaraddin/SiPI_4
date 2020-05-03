@@ -11,8 +11,20 @@ class Student:
 
     def get_all(self):
         return self.database.send_read_query("""
-        SELECT * FROM student
+        SELECT  FROM student
         """)
+
+    def get_group(self, group_id):
+        return self.database.send_read_query("""
+        SELECT id, full_name, budgetary_basis FROM student
+        WHERE group_id = '%s'
+        """ % group_id)
+
+    def get_student(self, id):
+        return self.database.send_read_query("""
+        SELECT * FROM student
+        WHERE id = '%s'
+        """ % id)
 
     def add(self, group_id, full_name, budgetary_basis):
         self.database.send_query("""
