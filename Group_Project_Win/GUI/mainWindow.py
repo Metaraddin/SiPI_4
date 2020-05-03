@@ -82,6 +82,14 @@ def update_abstract_table(table, data, **kwargs):
     table.resizeColumnsToContents()
 
 
+def check_sekect_abstract_table(table, *buttons):
+    enabled = False
+    if table.currentColumn() != -1:
+        enabled = True
+    for i in buttons:
+        i.setEnabled(enabled)
+
+
 class MainWindow(QtWidgets.QMainWindow, GUI.Forms.mainWindowForm.Ui_MainWindow):
     def __init__(self):
         super().__init__()
@@ -108,6 +116,12 @@ class MainWindow(QtWidgets.QMainWindow, GUI.Forms.mainWindowForm.Ui_MainWindow):
         self.table_teachers.horizontalHeader().sectionClicked.connect(self.sort_tables_teachers)
         self.table_groups.horizontalHeader().sectionClicked.connect(self.sort_tables_groups)
         self.table_student.horizontalHeader().sectionClicked.connect(self.sort_tables_student)
+
+        self.table_general.itemSelectionChanged.connect(self.check_select_tables)
+        self.table_disciplines.itemSelectionChanged.connect(self.check_select_tables)
+        self.table_teachers.itemSelectionChanged.connect(self.check_select_tables)
+        self.table_groups.itemSelectionChanged.connect(self.check_select_tables)
+        self.table_student.itemSelectionChanged.connect(self.check_select_tables)
 
         self.table_general.cellDoubleClicked.connect(self.open_group)
         self.table_groups.cellDoubleClicked.connect(self.open_student)
@@ -199,6 +213,15 @@ class MainWindow(QtWidgets.QMainWindow, GUI.Forms.mainWindowForm.Ui_MainWindow):
             self.table_student.horizontalHeader().setSectionResizeMode(1, QtWidgets.QHeaderView.Stretch)
             self.label_update_student.setText(text)
         self.resort_tables()
+        self.check_select_tables()
+
+    def check_select_tables(self):
+        check_sekect_abstract_table(self.table_general, self.button_delete_general, self.button_edit_general)
+        check_sekect_abstract_table(self.table_disciplines,
+                                    self.button_edit_disciplines, self.button_delete_disciplines)
+        check_sekect_abstract_table(self.table_teachers, self.button_delete_teachers, self.button_edit_teachers)
+        check_sekect_abstract_table(self.table_groups, self.button_edit_groups, self.button_delete_groups)
+        check_sekect_abstract_table(self.table_student, self.button_delete_student)
 
     def open_group(self, cell):
         groups = storage.groups.get_group(self.table_general.item(cell, 0).text())
