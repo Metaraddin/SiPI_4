@@ -1,6 +1,6 @@
 package com.pekadev.model
 
 object Config{
-    var IP = "95.26.101.132"
-    var PORT = 45666
+    var IP = "192.168.1.208"
+    var PORT = 3345
 }

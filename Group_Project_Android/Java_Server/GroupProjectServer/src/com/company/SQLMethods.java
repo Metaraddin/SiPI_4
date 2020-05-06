@@ -20,24 +20,28 @@ public class SQLMethods {
 
     public Object executeRequest(String request){
         ArrayList<ArrayList<String>> value  = new ArrayList<>();
-        try {
+        synchronized (statement){
+            try {
+                ResultSet rs = statement.executeQuery(request);
+                ResultSetMetaData rsmd = rs.getMetaData();
+                int columnsNumber = rsmd.getColumnCount();
 
-            ResultSet rs = statement.executeQuery(request);
-            ResultSetMetaData rsmd = rs.getMetaData();
-            int columnsNumber = rsmd.getColumnCount();
-
-            while (rs.next()) {
-                ArrayList<String> row = new ArrayList<>();
-                for (int i = 0; i < columnsNumber; i++) {
-                    row.add(rs.getString(i+1));
+                while (rs.next()) {
+                    ArrayList<String> row = new ArrayList<>();
+                    for (int i = 0; i < columnsNumber; i++) {
+                        row.add(rs.getString(i+1));
+                    }
+                    value.add(row);
                 }
-                value.add(row);
+
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+                System.out.println(request);
             }
-
-
-        } catch (SQLException e) {
-            e.printStackTrace();
+            return value;
         }
-        return value;
+
+
     }
 }

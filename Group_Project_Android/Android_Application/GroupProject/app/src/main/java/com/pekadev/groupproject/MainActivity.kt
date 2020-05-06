@@ -23,6 +23,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         setSupportActionBar(bottom_app_bar)
         currentFragment = GroupFragment()
+        title = "Список групп"
         supportFragmentManager.beginTransaction().replace(R.id.frameLayout,
             currentFragment as GroupFragment
         ).commit()
@@ -72,12 +73,14 @@ class MainActivity : AppCompatActivity() {
             }
             R.id.app_bar_group ->{
                 currentFragment = GroupFragment()
+                title = "Список групп"
                 supportFragmentManager.beginTransaction().replace(R.id.frameLayout,
                     currentFragment as GroupFragment
                 ).commit()
             }
             R.id.app_bar_student ->{
                 currentFragment = StudentsFragment()
+                title = "Список студентов"
                 supportFragmentManager.beginTransaction().replace(R.id.frameLayout,
                     currentFragment as StudentsFragment
                 ).commit()

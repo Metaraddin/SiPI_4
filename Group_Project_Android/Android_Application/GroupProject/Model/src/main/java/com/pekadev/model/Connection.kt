@@ -18,6 +18,7 @@ class Connection {
             }
             ois.close()
             oos.flush()
+            socket.close()
         }
         catch (e: Exception){
             if (!::result.isInitialized){

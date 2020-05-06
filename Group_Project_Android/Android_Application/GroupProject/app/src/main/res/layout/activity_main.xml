@@ -51,7 +51,7 @@
             app:buttonGravity="center_vertical"
             app:fabAlignmentMode="end"
             app:layout_anchor="@+id/bottom_app_bar"
-            app:layout_anchorGravity="bottom|center" />
+            app:layout_anchorGravity="bottom|center"/>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 

@@ -1,23 +1,24 @@
 package com.pekadev.modelview
 
 import com.pekadev.model.Methods
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.invoke
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import java.lang.Exception
 
 object AuthorizationActivityMethods {
-    fun login(id:String, password:String, callback: ()->Unit){
+    @ExperimentalCoroutinesApi
+    fun login(id:String, password:String, onSuccessCallback: ()->Unit, onFailedCallback: ()->Unit){
         try{
             GlobalScope.launch {
-                //var result = Methods.authorization(id, password)
-//            if ((result as ArrayList<*>).isEmpty()){
-//                return@launch
-//            }
+                var result = Methods.authorization(id, password)
+                if ((result as ArrayList<*>).isEmpty()){
+                    (Dispatchers.Main){
+                        onFailedCallback.invoke()
+                    }
+                    return@launch
+                }
                 EmployeeAccount.setData()
                 (Dispatchers.Main){
-                    callback.invoke()
+                    onSuccessCallback.invoke()
                 }
             }
         }

@@ -3,7 +3,7 @@ package com.pekadev.model
 object Methods {
     fun authorization(id: String, password: String) : Any{
         var connection = Connection()
-        connection.execute("Select * from employee where login=$id and password = '$password';")
+        connection.execute("Select * from employee where login='$id' and password = '$password';")
         return connection.result
     }
 
