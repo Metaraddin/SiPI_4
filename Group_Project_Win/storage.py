@@ -9,28 +9,25 @@ from Database.employee import Employee
 from Database.discipline import Discipline
 from PyQt5 import QtWidgets, QtGui, QtCore
 
-current_user = None
-student = None
 groups = None
-faculty = None
-specialty = None
+student = None
+discipline = None
 statement_exam = None
 statement_test = None
-discipline = None
 employee = None
 
 
 def connect(ip, port):
-    global student, groups, faculty, specialty, statement_exam, statement_test, discipline, employee
+    global student, groups, statement_exam, statement_test, discipline, employee
     try:
         database = Database('sipi_gp', 'client_gp', 'client', ip, port)
-    except psql.OperationalError as e:
+    except psql.OperationalError:
         return False
-    student = Student(database)
     groups = Groups(database)
+    student = Student(database)
+    discipline = Discipline(database)
     statement_exam = StatementExam(database)
     statement_test = StatementTest(database)
-    discipline = Discipline(database)
     employee = Employee(database)
     return True
 

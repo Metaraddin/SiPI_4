@@ -4,7 +4,7 @@ class Student:
         self.database.send_query("""
         CREATE TABLE IF NOT EXISTS student (
             id SERIAL PRIMARY KEY,
-            group_id INT NOT NULL,
+            group_id INT REFERENCES groups (id),
             full_name TEXT NOT NULL,
             budgetary_basis BOOLEAN NOT NULL)
         """)

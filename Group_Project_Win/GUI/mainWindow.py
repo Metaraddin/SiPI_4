@@ -99,6 +99,8 @@ class MainWindow(QtWidgets.QMainWindow, GUI.Forms.mainWindowForm.Ui_MainWindow):
         self.current_group = None
         self.current_student = None
 
+        self.tabWidget.currentChanged.connect(self.update_tables)
+
         self.labels_table_general = ['Номер  ', 'Факультет  ', 'Специальность  ', 'Год поступления  ']
         self.labels_table_disciplines = ['ID  ', 'Название  ', 'Семестр  ']
         self.labels_table_teachers = ['Логин  ', 'ФИО  ', 'Должность  ']

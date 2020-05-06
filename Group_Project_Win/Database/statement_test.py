@@ -3,8 +3,8 @@ class StatementTest:
         self.database = database
         self.database.send_query("""
         CREATE TABLE IF NOT EXISTS statement_test (
-            student_id INT NOT NULL,
-            discipline_id INT NOT NULL,
+            student_id INT REFERENCES student (id),
+            discipline_id INT REFERENCES discipline (id),
             mark BOOLEAN,
             PRIMARY KEY (student_id, discipline_id))
         """)

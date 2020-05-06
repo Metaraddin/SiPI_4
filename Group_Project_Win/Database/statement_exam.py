@@ -5,8 +5,8 @@ class StatementExam:
         self.database = database
         self.database.send_query("""
         CREATE TABLE IF NOT EXISTS statement_exam (
-            student_id INT NOT NULL,
-            discipline_id INT NOT NULL,
+            student_id INT REFERENCES student (id),
+            discipline_id INT REFERENCES discipline (id),
             mark INT,
             PRIMARY KEY (student_id, discipline_id))
         """)

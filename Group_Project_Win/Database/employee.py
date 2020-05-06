@@ -5,7 +5,6 @@ class Employee:
         CREATE TABLE IF NOT EXISTS employee (
             login TEXT PRIMARY KEY,
             password TEXT NOT NULL,
-            access TEXT NOT NULL,
             full_name TEXT NOT NULL,
             position TEXT NOT NULL)
         """)
