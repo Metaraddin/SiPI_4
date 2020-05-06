@@ -18,6 +18,17 @@ data class Student(var params:ArrayList<String>) : Serializable{
         this.group = group
     }
 
+    fun setData(new_params:ArrayList<String>){
+        this.params = new_params
+         id = params[0]
+         groupId = params[1]
+         fullName = params[2]
+         budgetaryBasis = params[3]
+         var innerFaculty = params[5]
+         var innerSpecialty  = params[6]
+         var recordBook = RecordBook()
+    }
+
 
 
     fun getFaculty() : String{

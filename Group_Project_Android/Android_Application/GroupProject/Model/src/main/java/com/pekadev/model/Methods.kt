@@ -46,4 +46,11 @@ object Methods {
         return connection.result
     }
 
+
+    fun loadStudent(studentId: String):Any{
+        var connection = Connection()
+        connection.execute("select * from student join groups on student.group_id = groups.id where student.id = $studentId;")
+        return connection.result
+    }
+
 }

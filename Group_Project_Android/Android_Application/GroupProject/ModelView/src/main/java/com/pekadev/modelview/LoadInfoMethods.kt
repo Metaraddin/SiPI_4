@@ -9,6 +9,7 @@ object LoadInfoMethods {
 
     fun loadGroupStudents(group: Group, dataChangeCallback: ()->Unit){
         GlobalScope.launch {
+            group.students.clear()
             group.addStudents(Methods.loadStudents(group.id) as ArrayList<ArrayList<String>>)
             dataChangeCallback.invoke()
         }
@@ -43,6 +44,18 @@ object LoadInfoMethods {
             student.recordBook.addExams(Methods.loadStudentExams(student.id) as ArrayList<ArrayList<String>>)
             student.recordBook.addTests(Methods.loadStudentTests(student.id) as ArrayList<ArrayList<String>>)
             dataChangeCallback.invoke()
+        }
+    }
+
+    fun loadStudent(student: Student, dataChangeCallback: ()->Unit){
+        GlobalScope.launch {
+            var data = Methods.loadStudent(student.id) as ArrayList<ArrayList<String>>
+            if (data.isEmpty()){
+                dataChangeCallback.invoke()
+                return@launch
+            }
+            student.setData(data[0])
+
         }
     }
 }

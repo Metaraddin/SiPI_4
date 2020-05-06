@@ -5,8 +5,12 @@ import android.os.Bundle
 import android.widget.EdgeEffect
 import androidx.recyclerview.widget.RecyclerView
 import com.pekadev.groupproject.adapter.SemesterGradesAdapter
+import com.pekadev.modelview.LoadInfoMethods
 import com.pekadev.modelview.Student
 import kotlinx.android.synthetic.main.activity_student.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 class StudentActivity : AppCompatActivity() {
 
@@ -27,4 +31,5 @@ class StudentActivity : AppCompatActivity() {
         }
 
     }
+
 }

@@ -20,4 +20,6 @@ class GroupActivity : AppCompatActivity() {
         frag.setAdapterWithGroup(group)
         supportFragmentManager.beginTransaction().replace(R.id.frameLayout2, frag).commit()
     }
+
+
 }
