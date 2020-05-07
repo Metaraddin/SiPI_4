@@ -4,7 +4,7 @@ class Student:
         self.database.send_query("""
         CREATE TABLE IF NOT EXISTS student (
             id SERIAL PRIMARY KEY,
-            group_id INT REFERENCES groups (id),
+            group_id INT REFERENCES groups (id) ON DELETE CASCADE,
             full_name TEXT NOT NULL,
             budgetary_basis BOOLEAN NOT NULL)
         """)
@@ -27,9 +27,15 @@ class Student:
         """ % id)
 
     def add(self, group_id, full_name, budgetary_basis):
-        self.database.send_query("""
+        return self.database.send_read_query("""
         INSERT INTO
             student (group_id, full_name, budgetary_basis)
         VALUES
             (%s, '%s', %s)
+        RETURNING id
         """ % (group_id, full_name, budgetary_basis))
+
+    def clear(self):
+        self.database.send_query("""
+        DELETE FROM student
+        """)

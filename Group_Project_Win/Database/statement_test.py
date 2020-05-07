@@ -3,8 +3,8 @@ class StatementTest:
         self.database = database
         self.database.send_query("""
         CREATE TABLE IF NOT EXISTS statement_test (
-            student_id INT REFERENCES student (id),
-            discipline_id INT REFERENCES discipline (id),
+            student_id INT REFERENCES student (id) ON DELETE CASCADE,
+            discipline_id INT REFERENCES discipline (id) ON DELETE CASCADE,
             mark BOOLEAN,
             PRIMARY KEY (student_id, discipline_id))
         """)
@@ -21,3 +21,16 @@ class StatementTest:
         JOIN statement_test as st on d.id = st.discipline_id
         WHERE st.student_id = '%s'
         """ % student_id)
+
+    def add(self, student_id, discipline_id, mark):
+        self.database.send_query("""
+        INSERT INTO 
+            statement_test (student_id, discipline_id, mark)
+        VALUES
+            (%s, %s, %s)
+        """ % (student_id, discipline_id, mark))
+
+    def clear(self):
+        self.database.send_query("""
+        DELETE FROM statement_test
+        """)

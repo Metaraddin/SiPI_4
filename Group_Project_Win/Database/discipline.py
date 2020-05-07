@@ -15,8 +15,13 @@ class Discipline:
 
     def add(self, name, semester):
         self.database.send_query("""
-            INSERT INTO 
-                discipline (name, semester)
-            VALUES
-                ('%s', %s)
+        INSERT INTO 
+            discipline (name, semester)
+        VALUES
+            ('%s', %s)
         """ % (name, semester))
+
+    def clear(self):
+        self.database.send_query("""
+        DELETE FROM discipline
+        """)

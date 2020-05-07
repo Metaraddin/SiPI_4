@@ -13,3 +13,17 @@ class Employee:
         return self.database.send_read_query("""
         SELECT login, full_name, position FROM employee
         """)
+
+    def add(self, login, password, full_name, position):
+        self.database.send_query("""
+        INSERT INTO 
+            employee (login, password, full_name, position)
+        VALUES
+            ('%s', '%s', '%s', '%s')
+        """ % (login, password, full_name, position))
+
+
+    def clear(self):
+        self.database.send_query("""
+        DELETE FROM employee
+        """)

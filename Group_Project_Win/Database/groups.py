@@ -19,3 +19,17 @@ class Groups:
         SELECT * FROM groups
         WHERE id = %s
         """ % id)
+
+    def add(self, faculty, specialty, receipt_year):
+        return self.database.send_read_query("""
+        INSERT INTO 
+            groups (faculty, specialty, receipt_year)
+        VALUES
+            ('%s', '%s', %s)
+        RETURNING id
+        """ % (faculty, specialty, receipt_year))
+
+    def clear(self):
+        self.database.send_query("""
+        DELETE FROM groups
+        """)
