@@ -69,12 +69,15 @@ class generator:
             storage.employee.add(login, password, full_name, position)
 
     def __disciplines_add(self):
+        disciplines = []
         for faculty in self.program:
             for specialty in self.program[faculty]:
                 for discipline in self.program[faculty][specialty]:
-                    semester = random.randint(1, 5)
-                    for n in range(random.randint(1, 3)):
-                        storage.discipline.add(discipline, semester + n)
+                    if discipline not in disciplines:
+                        disciplines.append(discipline)
+                        semester = random.randint(1, 5)
+                        for n in range(random.randint(1, 3)):
+                            storage.discipline.add(discipline, semester + n)
         return storage.discipline.get_all()
 
     def __group_set(self, min_year=2016, max_yer=2020):

@@ -6,7 +6,7 @@ class Discipline:
         self.database.send_query("""
         CREATE TABLE IF NOT EXISTS discipline (
             id SERIAL PRIMARY KEY,
-            name TEXT NOT NULL UNIQUE,
+            name TEXT NOT NULL,
             semester INT NOT NULL)
         """)
 
@@ -16,15 +16,12 @@ class Discipline:
         """)
 
     def add(self, name, semester):
-        try:
-            self.database.send_query("""
-            INSERT INTO 
-                discipline (name, semester)
-            VALUES
-                ('%s', %s)
-            """ % (name, semester))
-        except psql.errors.UniqueViolation:
-            pass
+        self.database.send_query("""
+        INSERT INTO 
+            discipline (name, semester)
+        VALUES
+            ('%s', %s)
+        """ % (name, semester))
 
     def clear(self):
         self.database.send_query("""
