@@ -89,12 +89,15 @@ class generator:
             full_name = self.__gen_full_name()
             student_id = storage.student.add(group_id, full_name, random.choice([True, False]))[0][0]
             for discipline in self.program[faculty][specialty]:
-                for db_discipline in self.__disciplines:
-                    if db_discipline[1] == discipline:
-                        if random.choice([True, False]):
-                            mark = random.choice(['Null', True, False])
-                            storage.statement_test.add(student_id, db_discipline[0], mark)
-                        else:
-                            mark = random.choice(['Null', random.randint(2, 5)])
-                            storage.statement_exam.add(student_id, db_discipline[0], mark)
+                added = []
+                if discipline not in added:
+                    added.append(discipline)
+                    for db_discipline in self.__disciplines:
+                        if db_discipline[1] == discipline:
+                            if random.choice([True, False]):
+                                mark = random.choice(['Null', True, False])
+                                storage.statement_test.add(student_id, db_discipline[0], mark)
+                            else:
+                                mark = random.choice(['Null', random.randint(2, 5)])
+                                storage.statement_exam.add(student_id, db_discipline[0], mark)
 
