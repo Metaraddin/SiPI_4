@@ -41,7 +41,7 @@ class generator:
 
     positions = ['Лаборант', 'Ассистент', 'Младший преподаватель', 'Преподаватель', 'Старший преподаватель', 'Заведующий кафедрой']
 
-    def __init__(self):
+    def __init__(self, group_count=100):
         storage.discipline.clear()
         storage.employee.clear()
         storage.groups.clear()
@@ -51,7 +51,7 @@ class generator:
 
         self.__employees_set()
         self.disciplines = self.__disciplines_add()
-        for i in range(100):
+        for i in range(group_count):
             self.__group_set()
 
     def __gen_full_name(self):
