@@ -49,7 +49,7 @@ class generator:
         storage.student.clear()
 
         self.__employees_set()
-        self.__disciplines = self.__disciplines_add()
+        self.__disciplines = self.__disciplines_set()
         for i in range(group_count):
             self.__group_set()
 
@@ -68,7 +68,7 @@ class generator:
             position = random.choice(self.positions)
             storage.employee.add(login, password, full_name, position)
 
-    def __disciplines_add(self):
+    def __disciplines_set(self):
         disciplines = []
         for faculty in self.program:
             for specialty in self.program[faculty]:
