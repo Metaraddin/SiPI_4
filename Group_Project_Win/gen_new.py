@@ -50,7 +50,7 @@ class generator:
         storage.student.clear()
 
         self.__employees_set()
-        self.disciplines = self.__disciplines_add()
+        self.__disciplines = self.__disciplines_add()
         for i in range(group_count):
             self.__group_set()
 
@@ -87,7 +87,7 @@ class generator:
             full_name = self.__gen_full_name()
             student_id = storage.student.add(group_id, full_name, random.choice([True, False]))[0][0]
             for discipline in self.program[faculty][specialty]:
-                for db_discipline in self.disciplines:
+                for db_discipline in self.__disciplines:
                     if db_discipline[1] == discipline:
                         if random.choice([True, False]):
                             mark = random.choice(['Null', True, False])
