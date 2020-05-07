@@ -1,10 +1,12 @@
+import psycopg2 as psql
+
 class Discipline:
     def __init__(self, database):
         self.database = database
         self.database.send_query("""
         CREATE TABLE IF NOT EXISTS discipline (
             id SERIAL PRIMARY KEY,
-            name TEXT NOT NULL,
+            name TEXT NOT NULL UNIQUE,
             semester INT NOT NULL)
         """)
 
@@ -14,12 +16,15 @@ class Discipline:
         """)
 
     def add(self, name, semester):
-        self.database.send_query("""
-        INSERT INTO 
-            discipline (name, semester)
-        VALUES
-            ('%s', %s)
-        """ % (name, semester))
+        try:
+            self.database.send_query("""
+            INSERT INTO 
+                discipline (name, semester)
+            VALUES
+                ('%s', %s)
+            """ % (name, semester))
+        except psql.errors.UniqueViolation:
+            pass
 
     def clear(self):
         self.database.send_query("""
