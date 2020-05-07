@@ -30,7 +30,7 @@ def connect(ip, port):
     statement_exam = StatementExam(database)
     statement_test = StatementTest(database)
     employee = Employee(database)
-    generator()
+    generator(30)
     return True
 
 
