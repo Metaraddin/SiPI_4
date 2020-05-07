@@ -1,5 +1,6 @@
 import psycopg2 as psql
 
+
 class StatementExam:
     def __init__(self, database):
         self.database = database
@@ -25,12 +26,15 @@ class StatementExam:
         """ % student_id)
 
     def add(self, student_id, discipline_id, mark):
-        self.database.send_query("""
-        INSERT INTO 
-            statement_exam (student_id, discipline_id, mark)
-        VALUES
-            (%s, %s, %s)
-        """ % (student_id, discipline_id, mark))
+        try:
+            self.database.send_query("""
+            INSERT INTO 
+                statement_exam (student_id, discipline_id, mark)
+            VALUES
+                (%s, %s, %s)
+            """ % (student_id, discipline_id, mark))
+        except psql.errors.UniqueViolation:
+            pass
 
     def clear(self):
         self.database.send_query("""
