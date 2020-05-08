@@ -7,7 +7,6 @@ from Database.statement_exam import StatementExam
 from Database.statement_test import StatementTest
 from Database.employee import Employee
 from Database.discipline import Discipline
-from gen_new import generator
 from PyQt5 import QtWidgets, QtGui, QtCore
 
 groups = None
@@ -30,7 +29,6 @@ def connect(ip, port):
     statement_exam = StatementExam(database)
     statement_test = StatementTest(database)
     employee = Employee(database)
-    generator(30)
     return True
 
 

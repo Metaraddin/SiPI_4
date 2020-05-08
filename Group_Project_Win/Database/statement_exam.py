@@ -36,6 +36,12 @@ class StatementExam:
         except psql.errors.UniqueViolation:
             pass
 
+    def delete(self, student_id, discipline_id):
+        self.database.send_query("""
+        DELETE FROM statement_exam 
+        WHERE student_id = %s AND discipline_id = %s
+        """ % (student_id, discipline_id))
+
     def clear(self):
         self.database.send_query("""
         DELETE FROM statement_exam

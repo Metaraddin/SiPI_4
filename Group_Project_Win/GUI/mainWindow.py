@@ -2,6 +2,7 @@ import storage
 import GUI.Forms.mainWindowForm
 import copy
 import datetime
+from generator import Generator
 from PyQt5 import QtWidgets, QtCore
 
 
@@ -143,6 +144,22 @@ class MainWindow(QtWidgets.QMainWindow, GUI.Forms.mainWindowForm.Ui_MainWindow):
         self.button_back_groups.clicked.connect(self.back_groups)
         self.button_back_student.clicked.connect(self.back_student)
 
+        self.button_gen_general.clicked.connect(self.gen_tables)
+        self.button_gen_disciplines.clicked.connect(self.gen_tables)
+        self.button_gen_teachers.clicked.connect(self.gen_tables)
+        self.button_gen_groups.clicked.connect(self.gen_tables)
+        self.button_gen_student.clicked.connect(self.gen_tables)
+
+        self.button_clear_general.clicked.connect(self.clear_general)
+        self.button_clear_disciplines.clicked.connect(self.clear_disciplines)
+        self.button_clear_teachers.clicked.connect(self.clear_teachers)
+
+        self.button_delete_general.clicked.connect(self.delete_general)
+        self.button_delete_disciplines.clicked.connect(self.delete_discipline)
+        self.button_delete_teachers.clicked.connect(self.delete_teacher)
+        self.button_delete_groups.clicked.connect(self.delete_group)
+        self.button_delete_student.clicked.connect(self.delete_student)
+
         self.set_tables()
 
     def set_tables(self):
@@ -152,7 +169,7 @@ class MainWindow(QtWidgets.QMainWindow, GUI.Forms.mainWindowForm.Ui_MainWindow):
         set_abstract_table(self.table_groups, self.labels_table_groups)
         set_abstract_table(self.table_student, self.labels_table_student)
         self.update_tables()
-        self.sort_tables_general(1)
+        self.sort_tables_general(2)
         self.sort_tables_disciplines(1)
         self.sort_tables_teachers(1)
         self.sort_tables_groups(1)
@@ -179,7 +196,7 @@ class MainWindow(QtWidgets.QMainWindow, GUI.Forms.mainWindowForm.Ui_MainWindow):
         sort_abstract_table(self.table_student, self.sort_flag_student, self.labels_table_student, column)
 
     def resort_tables(self):
-        resort_abstract_table(self.table_general, self.labels_table_general)
+        resort_abstract_table(self.table_general, self.sort_flag_general)
         resort_abstract_table(self.table_disciplines, self.sort_flag_disciplines)
         resort_abstract_table(self.table_teachers, self.sort_flag_teachers)
         resort_abstract_table(self.table_groups, self.sort_flag_groups)
@@ -200,20 +217,34 @@ class MainWindow(QtWidgets.QMainWindow, GUI.Forms.mainWindowForm.Ui_MainWindow):
         self.table_teachers.horizontalHeader().setSectionResizeMode(1, QtWidgets.QHeaderView.Stretch)
         self.label_update_teachers.setText(text)
         if self.current_group is not None:
-            self.label_head_groups.setText('Группа №%s' % self.current_group[0])
-            update_abstract_table(self.table_groups, storage.student.get_group(self.current_group[0]),
-                                  filter=self.line_edit_search_student.text(), boll_labels=['Коммерция', 'Бюджет'])
-            self.table_groups.horizontalHeader().setSectionResizeMode(1, QtWidgets.QHeaderView.Stretch)
-            self.label_update_groups.setText(text)
+            groups = storage.groups.get_group(self.current_group[0])
+            if len(groups) <= 0:
+                self.current_group = None
+                if self.stackedWidget.currentIndex() != 0:
+                    self.stackedWidget.setCurrentIndex(0)
+            else:
+                self.current_group = groups[0]
+                self.label_head_groups.setText('Группа №%s' % self.current_group[0])
+                update_abstract_table(self.table_groups, storage.student.get_group(self.current_group[0]),
+                                      filter=self.line_edit_search_student.text(), boll_labels=['Коммерция', 'Бюджет'])
+                self.table_groups.horizontalHeader().setSectionResizeMode(1, QtWidgets.QHeaderView.Stretch)
+                self.label_update_groups.setText(text)
         if self.current_student is not None:
-            self.label_head_student.setText(str(self.current_student[2]))
-            update_abstract_table(self.table_student,
-                                  storage.statement_exam.get_student(self.current_student[0]) +
-                                  storage.statement_test.get_student(self.current_student[0]),
-                                  filter=self.line_edit_search_student.text(),
-                                  boll_labels=['Незачет', 'Зачет'])
-            self.table_student.horizontalHeader().setSectionResizeMode(1, QtWidgets.QHeaderView.Stretch)
-            self.label_update_student.setText(text)
+            students = storage.student.get_student(self.current_student[0])
+            if len(students) <= 0:
+                self.current_student = None
+                if self.stackedWidget.currentIndex() > 1:
+                    self.stackedWidget.setCurrentIndex(1)
+            else:
+                self.current_student = students[0]
+                self.label_head_student.setText(str(self.current_student[2]))
+                update_abstract_table(self.table_student,
+                                      storage.statement_exam.get_student(self.current_student[0]) +
+                                      storage.statement_test.get_student(self.current_student[0]),
+                                      filter=self.line_edit_search_student.text(),
+                                      boll_labels=['Незачет', 'Зачет'])
+                self.table_student.horizontalHeader().setSectionResizeMode(1, QtWidgets.QHeaderView.Stretch)
+                self.label_update_student.setText(text)
         self.resort_tables()
         self.check_select_tables()
 
@@ -258,3 +289,67 @@ class MainWindow(QtWidgets.QMainWindow, GUI.Forms.mainWindowForm.Ui_MainWindow):
         self.current_student = None
         self.update_tables()
         self.stackedWidget.setCurrentIndex(1)
+
+    def gen_tables(self):
+        self.update_tables()
+        message = "Вы хотите заполнить базу данных тестовыми значениями?" \
+                  "\nЭто удалит все текущие записи и сбросит индексы."
+        button_reply = QtWidgets.QMessageBox.question(self, 'Генерация', message,
+                                                      QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No)
+        if button_reply == QtWidgets.QMessageBox.Yes:
+            Generator(30)
+        self.update_tables()
+
+    def clear_abstract_table(self, storage_table):
+        self.update_tables()
+        message = "Вы хотите очистить таблицу базы данных?" \
+                  "\nЭто действие нельзя отменить." \
+                  "\nИндексы сброшены не будут."
+        button_reply = QtWidgets.QMessageBox.question(self, 'Очищение', message,
+                                                      QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No)
+        if button_reply == QtWidgets.QMessageBox.Yes:
+            storage_table.clear()
+        self.update_tables()
+
+    def clear_general(self):
+        self.clear_abstract_table(storage.groups)
+
+    def clear_disciplines(self):
+        self.clear_abstract_table(storage.discipline)
+
+    def clear_teachers(self):
+        self.clear_abstract_table(storage.employee)
+
+    def delete_abstract(self, storage_table, *keys):
+        self.update_tables()
+        message = "Вы хотите удалить запись из базы данных?" \
+                  "\nЭто действие нельзя отменить."
+        button_reply = QtWidgets.QMessageBox.question(self, 'Удаление', message,
+                                                      QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No)
+        if button_reply == QtWidgets.QMessageBox.Yes:
+            if len(keys) == 1:
+                storage_table.delete(keys[0])
+            else:
+                storage_table.delete(keys[0], keys[1])
+        self.update_tables()
+
+    def delete_discipline(self):
+        self.delete_abstract(storage.discipline,
+                             self.table_disciplines.item(self.table_disciplines.currentRow(), 0).text())
+
+    def delete_teacher(self):
+        self.delete_abstract(storage.employee, self.table_teachers.item(self.table_teachers.currentRow(), 0).text())
+
+    def delete_general(self):
+        self.delete_abstract(storage.groups, self.table_general.item(self.table_general.currentRow(), 0).text())
+
+    def delete_group(self):
+        self.delete_abstract(storage.student, self.table_groups.item(self.table_groups.currentRow(), 0).text())
+
+    def delete_student(self):
+        student_id = self.current_student[0]
+        discipline_id = self.table_student.item(self.table_student.currentRow(), 0).text()
+        if self.table_student.item(self.table_student.currentRow(), 2).text() == 'Экзамен':
+            self.delete_abstract(storage.statement_exam, student_id, discipline_id)
+        else:
+            self.delete_abstract(storage.statement_test, student_id, discipline_id)

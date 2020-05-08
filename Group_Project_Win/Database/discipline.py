@@ -1,5 +1,3 @@
-import psycopg2 as psql
-
 class Discipline:
     def __init__(self, database):
         self.database = database
@@ -23,7 +21,17 @@ class Discipline:
             ('%s', %s)
         """ % (name, semester))
 
+    def delete(self, id):
+        self.database.send_query("""
+        DELETE FROM discipline WHERE id = '%s'
+        """ % id)
+
     def clear(self):
         self.database.send_query("""
-        DELETE FROM discipline
+        DELETE FROM discipline;
+        """)
+
+    def reset_id(self):
+        self.database.send_query("""
+        ALTER SEQUENCE discipline_id_seq RESTART
         """)

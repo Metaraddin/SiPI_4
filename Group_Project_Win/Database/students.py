@@ -35,7 +35,17 @@ class Student:
         RETURNING id
         """ % (group_id, full_name, budgetary_basis))
 
+    def delete(self, id):
+        self.database.send_query("""
+        DELETE FROM student WHERE id = '%s'
+        """ % id)
+
     def clear(self):
         self.database.send_query("""
         DELETE FROM student
+        """)
+
+    def reset_id(self):
+        self.database.send_query("""
+        ALTER SEQUENCE student_id_seq RESTART
         """)

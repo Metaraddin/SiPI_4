@@ -29,7 +29,17 @@ class Groups:
         RETURNING id
         """ % (faculty, specialty, receipt_year))
 
+    def delete(self, id):
+        self.database.send_query("""
+        DELETE FROM groups WHERE id = '%s'
+        """ % id)
+
     def clear(self):
         self.database.send_query("""
         DELETE FROM groups
+        """)
+
+    def reset_id(self):
+        self.database.send_query("""
+        ALTER SEQUENCE groups_id_seq RESTART
         """)

@@ -22,6 +22,10 @@ class Employee:
             ('%s', '%s', '%s', '%s')
         """ % (login, password, full_name, position))
 
+    def delete(self, login):
+        self.database.send_query("""
+        DELETE FROM employee WHERE login = '%s'
+        """ % login)
 
     def clear(self):
         self.database.send_query("""

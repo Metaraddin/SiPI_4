@@ -2,7 +2,7 @@ import storage
 import random
 
 
-class generator:
+class Generator:
     program = {
         'ФАИ': {
             'Архитектура': ['Архитектура', 'Строительство', 'Ландшафтный дизайн', 'Планирование'],
@@ -47,6 +47,9 @@ class generator:
         storage.statement_exam.clear()
         storage.statement_test.clear()
         storage.student.clear()
+        storage.discipline.reset_id()
+        storage.groups.reset_id()
+        storage.student.reset_id()
 
         self.__employees_set()
         self.__disciplines = self.__disciplines_set()
