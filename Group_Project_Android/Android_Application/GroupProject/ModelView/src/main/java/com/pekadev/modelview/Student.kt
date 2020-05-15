@@ -99,7 +99,7 @@ data class Student(var params:ArrayList<String>) : Serializable{
         }
         class GradeTest(args: ArrayList<String>) : Grade(args){
             override fun getFormattedData():String{
-                return disciplineName+": "+ if (mark==null) "Не зачтено" else "Зачет"
+                return disciplineName+": "+ if (mark=="t") "Зачет" else "Не зачтено"
             }
 
         }

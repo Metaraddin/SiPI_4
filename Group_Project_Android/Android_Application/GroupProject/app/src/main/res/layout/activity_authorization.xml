@@ -31,7 +31,6 @@
         android:layout_marginTop="292dp"
         android:layout_marginEnd="16dp"
         android:ems="10"
-        android:inputType="phone"
         android:shadowColor="#000000"
         android:textColorHighlight="@android:color/darker_gray"
         android:textColorLink="#000000"

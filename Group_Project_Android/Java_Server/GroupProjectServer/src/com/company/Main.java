@@ -12,18 +12,10 @@ public class Main {
 
 
 
-    static ExecutorService executeIt = Executors.newFixedThreadPool(2);
+    static ExecutorService executeIt = Executors.newFixedThreadPool(20);
     public static void main(String[] args) {
-        try (ServerSocket server = new ServerSocket(3345);
-             BufferedReader br = new BufferedReader(new InputStreamReader(System.in))) {
+        try (ServerSocket server = new ServerSocket(3345)) {
             while (!server.isClosed()) {
-                if (br.ready()) {
-                    String serverCommand = br.readLine();
-                    if (serverCommand.equalsIgnoreCase("quit")) {
-                        server.close();
-                        break;
-                    }
-                }
                 Socket client = server.accept();
                 executeIt.execute(new CommandListener(client));
                 System.out.println("Connection accepted.");

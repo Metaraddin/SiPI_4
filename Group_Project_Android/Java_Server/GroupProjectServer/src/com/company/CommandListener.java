@@ -7,16 +7,16 @@ import java.net.Socket;
 
 public class CommandListener implements Runnable {
 
-    private static Socket clientDialog;
+    private Socket clientDialog;
     private static SQLMethods methods = new SQLMethods();
     public CommandListener(Socket client) {
 
-        CommandListener.clientDialog = client;
+        clientDialog = client;
     }
     @Override
-    public synchronized void run() {
-        {
-
+    public void run() {
+        synchronized (clientDialog) {
+            System.out.println(Thread.currentThread());
             try {
                 ObjectOutputStream out = new ObjectOutputStream(clientDialog.getOutputStream());
                 DataInputStream in = new DataInputStream(clientDialog.getInputStream());
@@ -24,7 +24,6 @@ public class CommandListener implements Runnable {
                     String str = in.readUTF();
                     out.writeObject(methods.executeRequest(str));
                     out.flush();
-
                 }
                 in.close();
                 out.close();
