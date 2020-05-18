@@ -23,7 +23,7 @@ class Student:
     def get_student(self, id):
         return self.database.send_read_query("""
         SELECT * FROM student
-        WHERE id = '%s'
+        WHERE id = %s
         """ % id)
 
     def add(self, group_id, full_name, budgetary_basis):

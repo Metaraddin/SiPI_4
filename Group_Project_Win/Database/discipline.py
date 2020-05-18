@@ -13,6 +13,12 @@ class Discipline:
         SELECT * FROM discipline
         """)
 
+    def get_discipline(self, id):
+        return self.database.send_read_query("""
+        SELECT * FROM discipline
+        WHERE id = '%s'
+        """ % id)
+
     def add(self, name, semester):
         self.database.send_query("""
         INSERT INTO 

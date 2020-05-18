@@ -2,6 +2,10 @@ import psycopg2 as psql
 
 
 class StatementTest:
+    TEST_NAME = 'Зачёт'
+    MARK_TRUE = 'Зачёт'
+    MARK_FALSE = 'Не зачёт'
+
     def __init__(self, database):
         self.database = database
         self.database.send_query("""
@@ -12,6 +16,12 @@ class StatementTest:
             PRIMARY KEY (student_id, discipline_id))
         """)
 
+    def get(self, student_id, discipline_id):
+        return self.database.send_read_query("""
+        SELECT * FROM statement_test
+        WHERE student_id = '%s' AND discipline_id = '%s'
+        """ % (student_id, discipline_id))
+
     def get_all(self):
         return self.database.send_read_query("""
         SELECT * FROM statement_test
@@ -19,10 +29,17 @@ class StatementTest:
 
     def get_student(self, student_id):
         return self.database.send_read_query("""
-        SELECT d.id, d.name, 'Зачёт', st.mark, d.semester
+        SELECT d.id, d.name, '%s', st.mark, d.semester
         FROM discipline as d
         JOIN statement_test as st on d.id = st.discipline_id
         WHERE st.student_id = '%s'
+        """ % (self.TEST_NAME, student_id))
+
+    def get_student_id(self, student_id):
+        return self.database.send_read_query("""
+        SELECT discipline_id
+        FROM statement_test
+        WHERE student_id = '%s'
         """ % student_id)
 
     def add(self, student_id, discipline_id, mark):

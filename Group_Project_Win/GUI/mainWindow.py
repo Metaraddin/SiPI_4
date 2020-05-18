@@ -1,94 +1,11 @@
 import storage
 import GUI.Forms.mainWindowForm
-import copy
 import datetime
 from generator import Generator
-from PyQt5 import QtWidgets, QtCore
-
-
-def check_select_abstract_table(table):
-    if table.currentColumn() != -1:
-        return False
-    return True
-
-
-def set_abstract_table(table, labels):
-    table.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Fixed)
-    table.verticalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Fixed)
-    table.verticalHeader().hide()
-    table.setEditTriggers(QtWidgets.QTableWidget.NoEditTriggers)
-    table.setColumnCount(len(labels))
-    table.setHorizontalHeaderLabels(labels)
-    table.setSelectionMode(QtWidgets.QAbstractItemView.SingleSelection)
-    table.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows)
-    table.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
-
-
-def sort_abstract_table(table, sort_flag, labels, column):
-    local_labels = copy.deepcopy(labels)
-    if sort_flag[column] is None or sort_flag[column] is False:
-        table.sortItems(column)
-        local_labels[column] = local_labels[column][:-1] + '↑'
-        for i in range(len(sort_flag)):
-            sort_flag[i] = None
-        sort_flag[column] = True
-    else:
-        table.sortItems(column, QtCore.Qt.DescendingOrder)
-        local_labels[column] = local_labels[column][:-1] + '↓'
-        for i in range(len(sort_flag)):
-            sort_flag[i] = None
-        sort_flag[column] = False
-    table.setHorizontalHeaderLabels(local_labels)
-
-
-def resort_abstract_table(table, sort_flag):
-    try:
-        column = sort_flag.index(True)
-        table.sortItems(column)
-    except ValueError:
-        try:
-            column = sort_flag.index(False)
-            table.sortItems(column, QtCore.Qt.DescendingOrder)
-        except ValueError:
-            pass
-
-
-def update_abstract_table(table, data, **kwargs):
-    table.clearContents()
-    table.setRowCount(0)
-    count = 0
-    for i in range(len(data)):
-        check = False
-        for j in range(len(data[i])):
-            if kwargs.get('filter', '').lower() in str(data[i][j]).lower():
-                check = True
-        if check:
-            for j in range(len(data[i])):
-                table.setRowCount(count + 1)
-                item = data[i][j]
-                if type(item) is bool:
-                    if type:
-                        table.setItem(count, j,
-                                      QtWidgets.QTableWidgetItem(kwargs.get('boll_labels', ['False', 'True'])[1]))
-                    else:
-                        table.setItem(count, j,
-                                      QtWidgets.QTableWidgetItem(kwargs.get('boll_labels', ['False', 'True'])[0]))
-                elif type(item) is int:
-                    table_item = QtWidgets.QTableWidgetItem()
-                    table_item.setData(QtCore.Qt.EditRole, item)
-                    table.setItem(count, j, table_item)
-                else:
-                    table.setItem(count, j, QtWidgets.QTableWidgetItem(data[i][j]))
-            count += 1
-    table.resizeColumnsToContents()
-
-
-def check_sekect_abstract_table(table, *buttons):
-    enabled = False
-    if table.currentColumn() != -1:
-        enabled = True
-    for i in buttons:
-        i.setEnabled(enabled)
+from GUI.addDisciplineWindow import AddDisciplineWindow
+from GUI.markWindow import MarkWindow
+from PyQt5 import QtWidgets
+from GUI.abstract import *
 
 
 class MainWindow(QtWidgets.QMainWindow, GUI.Forms.mainWindowForm.Ui_MainWindow):
@@ -128,6 +45,7 @@ class MainWindow(QtWidgets.QMainWindow, GUI.Forms.mainWindowForm.Ui_MainWindow):
 
         self.table_general.cellDoubleClicked.connect(self.open_group)
         self.table_groups.cellDoubleClicked.connect(self.open_student)
+        self.table_student.cellDoubleClicked.connect(self.set_mark)
 
         self.line_edit_search_general.textChanged.connect(self.update_tables)
         self.line_edit_search_disciplines.textChanged.connect(self.update_tables)
@@ -159,6 +77,8 @@ class MainWindow(QtWidgets.QMainWindow, GUI.Forms.mainWindowForm.Ui_MainWindow):
         self.button_delete_teachers.clicked.connect(self.delete_teacher)
         self.button_delete_groups.clicked.connect(self.delete_group)
         self.button_delete_student.clicked.connect(self.delete_student)
+
+        self.button_add_student.clicked.connect(self.add_discipline)
 
         self.set_tables()
 
@@ -226,7 +146,7 @@ class MainWindow(QtWidgets.QMainWindow, GUI.Forms.mainWindowForm.Ui_MainWindow):
                 self.current_group = groups[0]
                 self.label_head_groups.setText('Группа №%s' % self.current_group[0])
                 update_abstract_table(self.table_groups, storage.student.get_group(self.current_group[0]),
-                                      filter=self.line_edit_search_student.text(), boll_labels=['Коммерция', 'Бюджет'])
+                                      filter=self.line_edit_search_student.text(), bool_labels=['Коммерция', 'Бюджет'])
                 self.table_groups.horizontalHeader().setSectionResizeMode(1, QtWidgets.QHeaderView.Stretch)
                 self.label_update_groups.setText(text)
         if self.current_student is not None:
@@ -242,7 +162,7 @@ class MainWindow(QtWidgets.QMainWindow, GUI.Forms.mainWindowForm.Ui_MainWindow):
                                       storage.statement_exam.get_student(self.current_student[0]) +
                                       storage.statement_test.get_student(self.current_student[0]),
                                       filter=self.line_edit_search_student.text(),
-                                      boll_labels=['Незачет', 'Зачет'])
+                                      bool_labels=[storage.statement_test.MARK_FALSE, storage.statement_test.MARK_TRUE])
                 self.table_student.horizontalHeader().setSectionResizeMode(1, QtWidgets.QHeaderView.Stretch)
                 self.label_update_student.setText(text)
         self.resort_tables()
@@ -349,7 +269,44 @@ class MainWindow(QtWidgets.QMainWindow, GUI.Forms.mainWindowForm.Ui_MainWindow):
     def delete_student(self):
         student_id = self.current_student[0]
         discipline_id = self.table_student.item(self.table_student.currentRow(), 0).text()
-        if self.table_student.item(self.table_student.currentRow(), 2).text() == 'Экзамен':
+        if self.table_student.item(self.table_student.currentRow(), 2).text() == storage.statement_exam.EXAM_NAME:
             self.delete_abstract(storage.statement_exam, student_id, discipline_id)
         else:
             self.delete_abstract(storage.statement_test, student_id, discipline_id)
+
+    def add_discipline(self):
+        if check_student(self.current_student):
+            self.ui = AddDisciplineWindow(self, self.current_student)
+            self.ui.show()
+        else:
+            QtWidgets.QMessageBox.about(self, 'Ошибка', 'Данный студент был удалён'
+                                                        'или изменён другим пользователем.')
+        self.update_tables()
+
+    def set_mark(self):
+        statement = self.get_select_statement()
+        discipline = self.get_select_discipline()
+        if check_student(self.current_student) \
+                and check_statement(statement) \
+                and check_discipline(discipline):
+            self.ui = MarkWindow(self, self.current_student, statement, discipline)
+            self.ui.show()
+        else:
+            QtWidgets.QMessageBox.about(self, 'Ошибка', 'Данные более не актуальны.'
+                                                        'Повторите попытку.')
+
+    def get_select_discipline(self):
+        id = int(self.table_student.item(self.table_student.currentRow(), 0).text())
+        name = str(self.table_student.item(self.table_student.currentRow(), 1).text())
+        semester = int(self.table_student.item(self.table_student.currentRow(), 4).text())
+        return tuple((id, name, semester))
+
+    def get_select_statement(self):
+        student_id = self.current_student[0]
+        discipline_id = int(self.table_student.item(self.table_student.currentRow(), 0).text())
+        if self.table_student.item(self.table_student.currentRow(), 2).text() == storage.statement_exam.EXAM_NAME:
+            mark = self.table_student.item(self.table_student.currentRow(), 3).text()
+        else:
+            mark = self.table_student.item(self.table_student.currentRow(), 3).text()
+        print(tuple((student_id, discipline_id, mark)))
+        return tuple((student_id, discipline_id, mark))
