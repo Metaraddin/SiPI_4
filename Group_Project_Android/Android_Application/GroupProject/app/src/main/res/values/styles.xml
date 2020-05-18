@@ -1,0 +1,27 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light">
+        <item name="android:statusBarColor">@color/white</item>
+        <item name="android:textColor">@color/textColor</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:textColorPrimary">#000000</item>
+        <item name="autoCompleteTextViewStyle">@style/cursorColor</item>
+        <item name="android:dropDownListViewStyle">@style/SpinnerStyle</item>
+        <item name="actionBarTheme">@style/Theme.AppCompat.Light</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="SpinnerStyle" parent="Widget.AppCompat.ListView.DropDown">
+        <item name="android:divider">#d1d1d1</item>
+        <item name="android:dividerHeight">0.5dp</item>
+    </style>
+
+    <style name="cursorColor" parent="Widget.AppCompat.AutoCompleteTextView">
+        <item name="android:textCursorDrawable">@drawable/cursor</item>
+    </style>
+</resources>

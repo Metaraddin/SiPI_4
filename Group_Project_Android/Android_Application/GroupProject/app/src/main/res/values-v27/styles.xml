@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light">
+        <item name="android:statusBarColor">@color/white</item>
+        <item name="android:textColor">@color/textColor</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowLightNavigationBar">true</item>
+        <item name="android:textColorPrimary">#000000</item>
+        <item name="autoCompleteTextViewStyle">@style/cursorColor</item>
+        <item name="android:dropDownListViewStyle">@style/SpinnerStyle</item>
+        <item name="actionBarTheme">@style/Theme.AppCompat.Light</item>
+    </style>
+</resources>
