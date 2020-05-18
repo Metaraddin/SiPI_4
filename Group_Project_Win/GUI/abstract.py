@@ -64,7 +64,7 @@ def update_abstract_table(table, data, **kwargs):
                 table.setRowCount(count + 1)
                 item = data[i][j]
                 if type(item) is bool:
-                    if type:
+                    if item:
                         table.setItem(count, j,
                                       QtWidgets.QTableWidgetItem(kwargs.get('bool_labels', ['False', 'True'])[1]))
                     else:

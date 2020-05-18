@@ -304,9 +304,17 @@ class MainWindow(QtWidgets.QMainWindow, GUI.Forms.mainWindowForm.Ui_MainWindow):
     def get_select_statement(self):
         student_id = self.current_student[0]
         discipline_id = int(self.table_student.item(self.table_student.currentRow(), 0).text())
+        mark = self.table_student.item(self.table_student.currentRow(), 3).text()
         if self.table_student.item(self.table_student.currentRow(), 2).text() == storage.statement_exam.EXAM_NAME:
-            mark = self.table_student.item(self.table_student.currentRow(), 3).text()
+            if mark != '': mark = int(mark)
+            else: mark = None
+            type = storage.statement_exam.EXAM_NAME
         else:
-            mark = self.table_student.item(self.table_student.currentRow(), 3).text()
-        print(tuple((student_id, discipline_id, mark)))
-        return tuple((student_id, discipline_id, mark))
+            type = storage.statement_test.TEST_NAME
+            if mark == storage.statement_test.MARK_TRUE:
+                mark = True
+            elif mark == storage.statement_test.MARK_FALSE:
+                mark = False
+            else:
+                mark = None
+        return tuple((student_id, discipline_id, mark, type))
