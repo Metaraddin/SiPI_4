@@ -1,4 +1,7 @@
 class Student:
+    BASIS_TRUE = 'Коммерция'
+    BASIS_FALSE = 'Бюджет'
+
     def __init__(self, database):
         self.database = database
         self.database.send_query("""
@@ -25,6 +28,12 @@ class Student:
         SELECT * FROM student
         WHERE id = %s
         """ % id)
+
+    def set(self, id, full_name, budgetary_basis):
+        self.database.send_query("""
+        UPDATE student SET full_name = '%s', budgetary_basis = %s
+        WHERE id = %s
+        """ % (full_name, budgetary_basis, id))
 
     def add(self, group_id, full_name, budgetary_basis):
         return self.database.send_read_query("""
