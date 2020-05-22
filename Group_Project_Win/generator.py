@@ -78,7 +78,7 @@ class Generator:
                 for discipline in self.program[faculty][specialty]:
                     if discipline not in disciplines:
                         disciplines.append(discipline)
-                        semester = random.randint(1, 5)
+                        semester = random.randint(1, 9)
                         for n in range(random.randint(1, 3)):
                             storage.discipline.add(discipline, semester + n)
         return storage.discipline.get_all()

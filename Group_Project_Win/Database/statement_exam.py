@@ -16,9 +16,9 @@ class StatementExam:
 
     def get(self, student_id, discipline_id):
         return self.database.send_read_query("""
-        SELECT * FROM statement_exam
+        SELECT *, '%s' FROM statement_exam
         WHERE student_id = '%s' AND discipline_id = '%s'
-        """ % (student_id, discipline_id))
+        """ % (self.EXAM_NAME, student_id, discipline_id))
 
     def get_all(self):
         return self.database.send_read_query("""
@@ -39,6 +39,12 @@ class StatementExam:
         FROM statement_exam
         WHERE student_id = '%s'
         """ % student_id)
+
+    def set_mark(self, student_id, discipline_id, mark):
+        self.database.send_query("""
+        UPDATE statement_exam SET mark = %s
+        WHERE student_id = %s AND discipline_id = %s
+        """ % (mark, student_id, discipline_id))
 
     def add(self, student_id, discipline_id, mark):
         try:

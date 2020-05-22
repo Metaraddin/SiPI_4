@@ -1,10 +1,13 @@
-import storage
 import GUI.Forms.mainWindowForm
 import datetime
 from generator import Generator
 from GUI.addDisciplineWindow import AddDisciplineWindow
 from GUI.markWindow import MarkWindow
-from PyQt5 import QtWidgets
+from GUI.studentWindow import StudentWindow
+from GUI.groupWindow import GroupWindow
+from GUI.disciplineWindow import DisciplineWindow
+from GUI.addEmployeeWindow import AddEmployeeWindow
+from GUI.editEmployeeWindow import EditEmployeeWindow
 from GUI.abstract import *
 
 
@@ -78,6 +81,18 @@ class MainWindow(QtWidgets.QMainWindow, GUI.Forms.mainWindowForm.Ui_MainWindow):
         self.button_delete_groups.clicked.connect(self.delete_group)
         self.button_delete_student.clicked.connect(self.delete_student)
 
+        self.button_add_general.clicked.connect(self.button_add_general_action)
+        self.button_edit_general.clicked.connect(self.button_edit_general_action)
+
+        self.button_add_groups.clicked.connect(self.button_add_groups_action)
+        self.button_edit_groups.clicked.connect(self.button_edit_groups_action)
+
+        self.button_add_teachers.clicked.connect(self.button_add_teachers_action)
+        self.button_edit_teachers.clicked.connect(self.button_edit_teachers_action)
+
+        self.button_add_disciplines.clicked.connect(self.button_add_disciplines_action)
+        self.button_edit_disciplines.clicked.connect(self.button_edit_disciplines_action)
+
         self.button_add_student.clicked.connect(self.add_discipline)
 
         self.set_tables()
@@ -146,7 +161,7 @@ class MainWindow(QtWidgets.QMainWindow, GUI.Forms.mainWindowForm.Ui_MainWindow):
                 self.current_group = groups[0]
                 self.label_head_groups.setText('Группа №%s' % self.current_group[0])
                 update_abstract_table(self.table_groups, storage.student.get_group(self.current_group[0]),
-                                      filter=self.line_edit_search_student.text(), bool_labels=['Коммерция', 'Бюджет'])
+                                      filter=self.line_edit_search_student.text(), bool_labels=[storage.student.BASIS_FALSE, storage.student.BASIS_TRUE])
                 self.table_groups.horizontalHeader().setSectionResizeMode(1, QtWidgets.QHeaderView.Stretch)
                 self.label_update_groups.setText(text)
         if self.current_student is not None:
@@ -184,7 +199,7 @@ class MainWindow(QtWidgets.QMainWindow, GUI.Forms.mainWindowForm.Ui_MainWindow):
             self.update_tables()
             self.stackedWidget.setCurrentIndex(1)
         else:
-            QtWidgets.QMessageBox.about(self, 'Ошибка', 'Данная группа была удалёна'
+            QtWidgets.QMessageBox.about(self, 'Ошибка', 'Данная группа была удалёна\n'
                                                         'или изменена другим пользователем.')
 
     def open_student(self, cell):
@@ -195,7 +210,7 @@ class MainWindow(QtWidgets.QMainWindow, GUI.Forms.mainWindowForm.Ui_MainWindow):
             self.update_tables()
             self.stackedWidget.setCurrentIndex(2)
         else:
-            QtWidgets.QMessageBox.about(self, 'Ошибка', 'Данный студент был удалён'
+            QtWidgets.QMessageBox.about(self, 'Ошибка', 'Данный студент был удалён\n'
                                                         'или изменён другим пользователем.')
 
     def back_groups(self):
@@ -218,6 +233,11 @@ class MainWindow(QtWidgets.QMainWindow, GUI.Forms.mainWindowForm.Ui_MainWindow):
                                                       QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No)
         if button_reply == QtWidgets.QMessageBox.Yes:
             Generator(30)
+        self.update_tables()
+
+    def generate(self):
+        Generator()
+        self.ui.close()
         self.update_tables()
 
     def clear_abstract_table(self, storage_table):
@@ -267,46 +287,150 @@ class MainWindow(QtWidgets.QMainWindow, GUI.Forms.mainWindowForm.Ui_MainWindow):
         self.delete_abstract(storage.student, self.table_groups.item(self.table_groups.currentRow(), 0).text())
 
     def delete_student(self):
-        student_id = self.current_student[0]
-        discipline_id = self.table_student.item(self.table_student.currentRow(), 0).text()
-        if self.table_student.item(self.table_student.currentRow(), 2).text() == storage.statement_exam.EXAM_NAME:
-            self.delete_abstract(storage.statement_exam, student_id, discipline_id)
+        if check_student(self.current_student):
+            student_id = self.current_student[0]
+            discipline_id = self.table_student.item(self.table_student.currentRow(), 0).text()
+            if self.table_student.item(self.table_student.currentRow(), 2).text() == storage.statement_exam.EXAM_NAME:
+                self.delete_abstract(storage.statement_exam, student_id, discipline_id)
+            else:
+                self.delete_abstract(storage.statement_test, student_id, discipline_id)
         else:
-            self.delete_abstract(storage.statement_test, student_id, discipline_id)
+            QtWidgets.QMessageBox.about(self, 'Ошибка', 'Данный студент был удалён\n'
+                                                        'или изменён другим пользователем.')
+            self.update_tables()
 
     def add_discipline(self):
         if check_student(self.current_student):
             self.ui = AddDisciplineWindow(self, self.current_student)
             self.ui.show()
         else:
-            QtWidgets.QMessageBox.about(self, 'Ошибка', 'Данный студент был удалён'
+            QtWidgets.QMessageBox.about(self, 'Ошибка', 'Данный студент был удалён\n'
                                                         'или изменён другим пользователем.')
         self.update_tables()
 
     def set_mark(self):
         statement = self.get_select_statement()
-        discipline = self.get_select_discipline()
+        discipline = self.get_select_student_discipline()
         if check_student(self.current_student) \
                 and check_statement(statement) \
                 and check_discipline(discipline):
             self.ui = MarkWindow(self, self.current_student, statement, discipline)
             self.ui.show()
         else:
-            QtWidgets.QMessageBox.about(self, 'Ошибка', 'Данные более не актуальны.'
+            QtWidgets.QMessageBox.about(self, 'Ошибка', 'Данные более не актуальны.\n'
                                                         'Повторите попытку.')
 
     def get_select_discipline(self):
+        id = int(self.table_disciplines.item(self.table_disciplines.currentRow(), 0).text())
+        name = str(self.table_disciplines.item(self.table_disciplines.currentRow(), 1).text())
+        semester = int(self.table_disciplines.item(self.table_disciplines.currentRow(), 2).text())
+        return tuple((id, name, semester))
+
+    def get_select_student_discipline(self):
         id = int(self.table_student.item(self.table_student.currentRow(), 0).text())
         name = str(self.table_student.item(self.table_student.currentRow(), 1).text())
         semester = int(self.table_student.item(self.table_student.currentRow(), 4).text())
         return tuple((id, name, semester))
 
+    def get_select_student(self):
+        id = int(self.table_groups.item(self.table_groups.currentRow(), 0).text())
+        group_id = self.current_group[0]
+        full_name = str(self.table_groups.item(self.table_groups.currentRow(), 1).text())
+        basis = str(self.table_groups.item(self.table_groups.currentRow(), 2).text())
+        if basis == storage.student.BASIS_TRUE:
+            basis = True
+        else:
+            basis = False
+        return tuple((id, group_id, full_name, basis))
+
+    def get_select_group(self):
+        id = int(self.table_general.item(self.table_general.currentRow(), 0).text())
+        faculty = str(self.table_general.item(self.table_general.currentRow(), 1).text())
+        specialty = str(self.table_general.item(self.table_general.currentRow(), 2).text())
+        receipt_year = int(self.table_general.item(self.table_general.currentRow(), 3).text())
+        return tuple((id, faculty, specialty, receipt_year))
+
+    def get_select_teachers(self):
+        login = str(self.table_teachers.item(self.table_teachers.currentRow(), 0).text())
+        name = str(self.table_teachers.item(self.table_teachers.currentRow(), 1).text())
+        position = str(self.table_teachers.item(self.table_teachers.currentRow(), 2).text())
+        return tuple((login, name, position))
+
     def get_select_statement(self):
         student_id = self.current_student[0]
         discipline_id = int(self.table_student.item(self.table_student.currentRow(), 0).text())
+        mark = self.table_student.item(self.table_student.currentRow(), 3).text()
         if self.table_student.item(self.table_student.currentRow(), 2).text() == storage.statement_exam.EXAM_NAME:
-            mark = self.table_student.item(self.table_student.currentRow(), 3).text()
+            if mark != '': mark = int(mark)
+            else: mark = None
+            type = storage.statement_exam.EXAM_NAME
         else:
-            mark = self.table_student.item(self.table_student.currentRow(), 3).text()
-        print(tuple((student_id, discipline_id, mark)))
-        return tuple((student_id, discipline_id, mark))
+            type = storage.statement_test.TEST_NAME
+            if mark == storage.statement_test.MARK_TRUE:
+                mark = True
+            elif mark == storage.statement_test.MARK_FALSE:
+                mark = False
+            else:
+                mark = None
+        return tuple((student_id, discipline_id, mark, type))
+
+    def button_add_groups_action(self):
+        if check_group(self.current_group):
+            self.ui = StudentWindow(self, self.current_group)
+            self.ui.show()
+        else:
+            QtWidgets.QMessageBox.about(self, 'Ошибка', 'Данные более не актуальны.\n'
+                                                        'Повторите попытку.')
+        self.update_tables()
+
+    def button_edit_groups_action(self):
+        student = self.get_select_student()
+        if check_group(self.current_group) and check_student(student):
+            self.ui = StudentWindow(self, self.current_group, student)
+            self.ui.show()
+        else:
+            QtWidgets.QMessageBox.about(self, 'Ошибка', 'Данные более не актуальны.\n'
+                                                        'Повторите попытку.')
+        self.update_tables()
+
+    def button_add_general_action(self):
+        self.ui = GroupWindow(self)
+        self.ui.show()
+
+    def button_edit_general_action(self):
+        group = self.get_select_group()
+        if check_group(group):
+            self.ui = GroupWindow(self, group)
+            self.ui.show()
+        else:
+            QtWidgets.QMessageBox.about(self, 'Ошибка', 'Данные более не актуальны.\n'
+                                                        'Повторите попытку.')
+        self.update_tables()
+
+    def button_add_disciplines_action(self):
+        self.ui = DisciplineWindow(self)
+        self.ui.show()
+
+    def button_edit_disciplines_action(self):
+        discipline = self.get_select_discipline()
+        if check_discipline(discipline):
+            self.ui = DisciplineWindow(self, discipline)
+            self.ui.show()
+        else:
+            QtWidgets.QMessageBox.about(self, 'Ошибка', 'Данные более не актуальны.\n'
+                                                        'Повторите попытку.')
+        self.update_tables()
+
+    def button_add_teachers_action(self):
+        self.ui = AddEmployeeWindow(self)
+        self.ui.show()
+
+    def button_edit_teachers_action(self):
+        employee = self.get_select_teachers()
+        if check_employee(employee):
+            self.ui = EditEmployeeWindow(self, employee)
+            self.ui.show()
+        else:
+            QtWidgets.QMessageBox.about(self, 'Ошибка', 'Данные более не актуальны.\n'
+                                                        'Повторите попытку.')
+        self.update_tables()

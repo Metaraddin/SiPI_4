@@ -64,7 +64,7 @@ def update_abstract_table(table, data, **kwargs):
                 table.setRowCount(count + 1)
                 item = data[i][j]
                 if type(item) is bool:
-                    if type:
+                    if item:
                         table.setItem(count, j,
                                       QtWidgets.QTableWidgetItem(kwargs.get('bool_labels', ['False', 'True'])[1]))
                     else:
@@ -102,11 +102,27 @@ def check_discipline(discipline):
     return False
 
 
+def check_employee(employee):
+    print(employee)
+    employees = storage.employee.get_employee(employee[0])
+    print(employees[0])
+    if len(employees) > 0 and employees[0] == employee:
+        return True
+    return False
+
+
 def check_statement(statement):
     statements_test = storage.statement_test.get(statement[0], statement[1])
     if len(statements_test) > 0 and statements_test[0] == statement:
         return True
     statements_exam = storage.statement_exam.get(statement[0], statement[1])
     if len(statements_exam) > 0 and statements_exam[0] == statement:
+        return True
+    return False
+
+
+def check_group(group):
+    groups = storage.groups.get_group(group[0])
+    if len(groups) > 0 and groups[0] == group:
         return True
     return False

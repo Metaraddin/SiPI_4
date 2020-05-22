@@ -20,6 +20,12 @@ class Groups:
         WHERE id = %s
         """ % id)
 
+    def set(self, id, faculty, specialty, receipt_year):
+        self.database.send_query("""
+        UPDATE groups SET faculty = '%s', specialty = '%s', receipt_year = %s
+        WHERE id = %s
+        """ % (faculty, specialty, receipt_year, id))
+
     def add(self, faculty, specialty, receipt_year):
         return self.database.send_read_query("""
         INSERT INTO 

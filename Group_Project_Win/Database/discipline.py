@@ -19,6 +19,12 @@ class Discipline:
         WHERE id = '%s'
         """ % id)
 
+    def set(self, id, name, semester):
+        self.database.send_query("""
+        UPDATE discipline SET name = '%s', semester = %s
+        WHERE id = %s
+        """ % (name, semester, id))
+
     def add(self, name, semester):
         self.database.send_query("""
         INSERT INTO 

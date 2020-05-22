@@ -14,6 +14,18 @@ class Employee:
         SELECT login, full_name, position FROM employee
         """)
 
+    def set(self, last_login, login, full_name, position):
+        self.database.send_query("""
+        UPDATE employee SET login = '%s', full_name = '%s', position = '%s'
+        WHERE login = '%s'
+        """ % (login, full_name, position, last_login))
+
+    def get_employee(self, login):
+        return self.database.send_read_query("""
+        SELECT login, full_name, position FROM employee
+        WHERE login = '%s'
+        """ % login)
+
     def add(self, login, password, full_name, position):
         self.database.send_query("""
         INSERT INTO 
