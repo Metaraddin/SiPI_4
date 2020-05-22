@@ -199,7 +199,7 @@ class MainWindow(QtWidgets.QMainWindow, GUI.Forms.mainWindowForm.Ui_MainWindow):
             self.update_tables()
             self.stackedWidget.setCurrentIndex(1)
         else:
-            QtWidgets.QMessageBox.about(self, 'Ошибка', 'Данная группа была удалёна'
+            QtWidgets.QMessageBox.about(self, 'Ошибка', 'Данная группа была удалёна\n'
                                                         'или изменена другим пользователем.')
 
     def open_student(self, cell):
@@ -210,7 +210,7 @@ class MainWindow(QtWidgets.QMainWindow, GUI.Forms.mainWindowForm.Ui_MainWindow):
             self.update_tables()
             self.stackedWidget.setCurrentIndex(2)
         else:
-            QtWidgets.QMessageBox.about(self, 'Ошибка', 'Данный студент был удалён'
+            QtWidgets.QMessageBox.about(self, 'Ошибка', 'Данный студент был удалён\n'
                                                         'или изменён другим пользователем.')
 
     def back_groups(self):
@@ -295,7 +295,7 @@ class MainWindow(QtWidgets.QMainWindow, GUI.Forms.mainWindowForm.Ui_MainWindow):
             else:
                 self.delete_abstract(storage.statement_test, student_id, discipline_id)
         else:
-            QtWidgets.QMessageBox.about(self, 'Ошибка', 'Данный студент был удалён'
+            QtWidgets.QMessageBox.about(self, 'Ошибка', 'Данный студент был удалён\n'
                                                         'или изменён другим пользователем.')
             self.update_tables()
 
@@ -304,26 +304,32 @@ class MainWindow(QtWidgets.QMainWindow, GUI.Forms.mainWindowForm.Ui_MainWindow):
             self.ui = AddDisciplineWindow(self, self.current_student)
             self.ui.show()
         else:
-            QtWidgets.QMessageBox.about(self, 'Ошибка', 'Данный студент был удалён'
+            QtWidgets.QMessageBox.about(self, 'Ошибка', 'Данный студент был удалён\n'
                                                         'или изменён другим пользователем.')
         self.update_tables()
 
     def set_mark(self):
         statement = self.get_select_statement()
-        discipline = self.get_select_discipline()
+        discipline = self.get_select_student_discipline()
         if check_student(self.current_student) \
                 and check_statement(statement) \
                 and check_discipline(discipline):
             self.ui = MarkWindow(self, self.current_student, statement, discipline)
             self.ui.show()
         else:
-            QtWidgets.QMessageBox.about(self, 'Ошибка', 'Данные более не актуальны.'
+            QtWidgets.QMessageBox.about(self, 'Ошибка', 'Данные более не актуальны.\n'
                                                         'Повторите попытку.')
 
     def get_select_discipline(self):
         id = int(self.table_disciplines.item(self.table_disciplines.currentRow(), 0).text())
         name = str(self.table_disciplines.item(self.table_disciplines.currentRow(), 1).text())
         semester = int(self.table_disciplines.item(self.table_disciplines.currentRow(), 2).text())
+        return tuple((id, name, semester))
+
+    def get_select_student_discipline(self):
+        id = int(self.table_student.item(self.table_student.currentRow(), 0).text())
+        name = str(self.table_student.item(self.table_student.currentRow(), 1).text())
+        semester = int(self.table_student.item(self.table_student.currentRow(), 4).text())
         return tuple((id, name, semester))
 
     def get_select_student(self):
@@ -373,7 +379,7 @@ class MainWindow(QtWidgets.QMainWindow, GUI.Forms.mainWindowForm.Ui_MainWindow):
             self.ui = StudentWindow(self, self.current_group)
             self.ui.show()
         else:
-            QtWidgets.QMessageBox.about(self, 'Ошибка', 'Данные более не актуальны.'
+            QtWidgets.QMessageBox.about(self, 'Ошибка', 'Данные более не актуальны.\n'
                                                         'Повторите попытку.')
         self.update_tables()
 
@@ -383,7 +389,7 @@ class MainWindow(QtWidgets.QMainWindow, GUI.Forms.mainWindowForm.Ui_MainWindow):
             self.ui = StudentWindow(self, self.current_group, student)
             self.ui.show()
         else:
-            QtWidgets.QMessageBox.about(self, 'Ошибка', 'Данные более не актуальны.'
+            QtWidgets.QMessageBox.about(self, 'Ошибка', 'Данные более не актуальны.\n'
                                                         'Повторите попытку.')
         self.update_tables()
 
@@ -397,7 +403,7 @@ class MainWindow(QtWidgets.QMainWindow, GUI.Forms.mainWindowForm.Ui_MainWindow):
             self.ui = GroupWindow(self, group)
             self.ui.show()
         else:
-            QtWidgets.QMessageBox.about(self, 'Ошибка', 'Данные более не актуальны.'
+            QtWidgets.QMessageBox.about(self, 'Ошибка', 'Данные более не актуальны.\n'
                                                         'Повторите попытку.')
         self.update_tables()
 
@@ -411,7 +417,7 @@ class MainWindow(QtWidgets.QMainWindow, GUI.Forms.mainWindowForm.Ui_MainWindow):
             self.ui = DisciplineWindow(self, discipline)
             self.ui.show()
         else:
-            QtWidgets.QMessageBox.about(self, 'Ошибка', 'Данные более не актуальны.'
+            QtWidgets.QMessageBox.about(self, 'Ошибка', 'Данные более не актуальны.\n'
                                                         'Повторите попытку.')
         self.update_tables()
 
@@ -425,6 +431,6 @@ class MainWindow(QtWidgets.QMainWindow, GUI.Forms.mainWindowForm.Ui_MainWindow):
             self.ui = EditEmployeeWindow(self, employee)
             self.ui.show()
         else:
-            QtWidgets.QMessageBox.about(self, 'Ошибка', 'Данные более не актуальны.'
+            QtWidgets.QMessageBox.about(self, 'Ошибка', 'Данные более не актуальны.\n'
                                                         'Повторите попытку.')
         self.update_tables()

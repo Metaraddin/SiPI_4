@@ -54,10 +54,10 @@ class StudentWindow(QtWidgets.QDialog, GUI.Forms.studentWindowForm.Ui_Dialog):
                 if check_student(self.student):
                     storage.student.set(self.student[0], full_name, basis)
                 else:
-                    QtWidgets.QMessageBox.about(self, 'Ошибка', 'Данные более не актуальны.'
+                    QtWidgets.QMessageBox.about(self, 'Ошибка', 'Данные более не актуальны.\n'
                                                                 'Повторите попытку.')
         else:
-            QtWidgets.QMessageBox.about(self, 'Ошибка', 'Данные более не актуальны.'
+            QtWidgets.QMessageBox.about(self, 'Ошибка', 'Данные более не актуальны.\n'
                                                         'Повторите попытку.')
         self.parent.update_tables()
         self.close()

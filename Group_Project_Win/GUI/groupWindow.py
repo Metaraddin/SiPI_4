@@ -57,7 +57,7 @@ class GroupWindow(QtWidgets.QDialog, GUI.Forms.groupWindowForm.Ui_Dialog):
                 id = self.group[0]
                 storage.groups.set(id, faculty, specialty, year)
             else:
-                QtWidgets.QMessageBox.about(self, 'Ошибка', 'Данные более не актуальны.'
+                QtWidgets.QMessageBox.about(self, 'Ошибка', 'Данные более не актуальны.\n'
                                                             'Повторите попытку.')
         self.parent.update_tables()
         self.close()

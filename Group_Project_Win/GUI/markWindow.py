@@ -47,7 +47,7 @@ class MarkWindow(QtWidgets.QDialog, GUI.Forms.markWindowForm.Ui_Dialog):
                 else:
                     storage.statement_test.set_mark(self.student[0], self.discipline[0], False)
         else:
-            QtWidgets.QMessageBox.about(self, 'Ошибка', 'Данные более не актуальны.'
+            QtWidgets.QMessageBox.about(self, 'Ошибка', 'Данные более не актуальны.\n'
                                                         'Повторите попытку.')
         self.parent.update_tables()
         self.close()

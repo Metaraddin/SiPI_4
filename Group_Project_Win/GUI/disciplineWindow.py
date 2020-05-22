@@ -49,7 +49,7 @@ class DisciplineWindow(QtWidgets.QDialog, GUI.Forms.disciplineWindowForm.Ui_Dial
                 id = self.discipline[0]
                 storage.discipline.set(id, name, semester)
             else:
-                QtWidgets.QMessageBox.about(self, 'Ошибка', 'Данные более не актуальны.'
+                QtWidgets.QMessageBox.about(self, 'Ошибка', 'Данные более не актуальны.\n'
                                                             'Повторите попытку.')
         self.parent.update_tables()
         self.close()

@@ -56,7 +56,7 @@ class EditEmployeeWindow(QtWidgets.QDialog, GUI.Forms.editEmployeeWindowForm.Ui_
 
             storage.employee.set(last_login, login, name, position)
         else:
-            QtWidgets.QMessageBox.about(self, 'Ошибка', 'Данные более не актуальны.'
+            QtWidgets.QMessageBox.about(self, 'Ошибка', 'Данные более не актуальны.\n'
                                                         'Повторите попытку.')
 
         self.parent.update_tables()
